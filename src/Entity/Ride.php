@@ -34,6 +34,12 @@ class Ride
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'rides')]
     private Collection $users;
 
+    #[ORM\ManyToOne(inversedBy: 'rides')]
+    private ?Location $location = null;
+
+    #[ORM\ManyToOne(inversedBy: 'rides')]
+    private ?Car $car = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -124,6 +130,30 @@ class Ride
     public function removeUser(User $user): self
     {
         $this->users->removeElement($user);
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function getCar(): ?Car
+    {
+        return $this->car;
+    }
+
+    public function setCar(?Car $car): self
+    {
+        $this->car = $car;
 
         return $this;
     }

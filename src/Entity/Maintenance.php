@@ -32,6 +32,9 @@ class Maintenance
     #[ORM\ManyToOne(inversedBy: 'maintenances')]
     private ?Incident $incident = null;
 
+    #[ORM\ManyToOne(inversedBy: 'maintenances')]
+    private ?Car $car = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class Maintenance
     public function setIncident(?Incident $incident): self
     {
         $this->incident = $incident;
+
+        return $this;
+    }
+
+    public function getCar(): ?Car
+    {
+        return $this->car;
+    }
+
+    public function setCar(?Car $car): self
+    {
+        $this->car = $car;
 
         return $this;
     }
