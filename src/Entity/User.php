@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,22 +28,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    private ?string $first_name = null;
+    private ?string $firstName = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    private ?string $last_name = null;
+    private ?string $lastName = null;
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $phone = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $driver_license_check = null;
+    private ?bool $driverLicenceCheck = null;
 
     #[ORM\Column]
-    private ?bool $identity_check = null;
+    private ?bool $identityCheck = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $is_driver = null;
+    private ?bool $isDriver = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Allowance::class)]
+    private Collection $allowances;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Company $company = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Maintenance::class)]
+    private Collection $maintenances;
+
+    #[ORM\ManyToMany(targetEntity: Ride::class, mappedBy: 'users')]
+    private Collection $rides;
+
+    public function __construct()
+    {
+        $this->allowances = new ArrayCollection();
+        $this->maintenances = new ArrayCollection();
+        $this->rides = new ArrayCollection();
+    }
 
     public function getId(): ?string
     {
@@ -110,24 +131,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getFirstName(): ?string
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
-    public function setFirstName(?string $first_name): self
+    public function setFirstName(?string $firstName): self
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
 
         return $this;
     }
 
     public function getLastName(): ?string
     {
-        return $this->last_name;
+        return $this->lastName;
     }
 
-    public function setLastName(?string $last_name): self
+    public function setLastName(?string $lastName): self
     {
-        $this->last_name = $last_name;
+        $this->lastName = $lastName;
 
         return $this;
     }
@@ -146,36 +167,135 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isDriverLicenseCheck(): ?bool
     {
-        return $this->driver_license_check;
+        return $this->driverLicenceCheck;
     }
 
-    public function setDriverLicenseCheck(?bool $driver_license_check): self
+    public function setDriverLicenseCheck(?bool $driverLicenceCheck): self
     {
-        $this->driver_license_check = $driver_license_check;
+        $this->driverLicenceCheck = $driverLicenceCheck;
 
         return $this;
     }
 
     public function isIdentityCheck(): ?bool
     {
-        return $this->identity_check;
+        return $this->identityCheck;
     }
 
-    public function setIdentityCheck(bool $identity_check): self
+    public function setIdentityCheck(bool $identityCheck): self
     {
-        $this->identity_check = $identity_check;
+        $this->identityCheck = $identityCheck;
 
         return $this;
     }
 
     public function isIsDriver(): ?bool
     {
-        return $this->is_driver;
+        return $this->isDriver;
     }
 
-    public function setIsDriver(?bool $is_driver): self
+    public function setIsDriver(?bool $isDriver): self
     {
-        $this->is_driver = $is_driver;
+        $this->isDriver = $isDriver;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Allowance>
+     */
+    public function getAllowances(): Collection
+    {
+        return $this->allowances;
+    }
+
+    public function addAllowance(Allowance $allowance): self
+    {
+        if (!$this->allowances->contains($allowance)) {
+            $this->allowances->add($allowance);
+            $allowance->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAllowance(Allowance $allowance): self
+    {
+        if ($this->allowances->removeElement($allowance)) {
+            // set the owning side to null (unless already changed)
+            if ($allowance->getUser() === $this) {
+                $allowance->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): self
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Maintenance>
+     */
+    public function getMaintenances(): Collection
+    {
+        return $this->maintenances;
+    }
+
+    public function addMaintenance(Maintenance $maintenance): self
+    {
+        if (!$this->maintenances->contains($maintenance)) {
+            $this->maintenances->add($maintenance);
+            $maintenance->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMaintenance(Maintenance $maintenance): self
+    {
+        if ($this->maintenances->removeElement($maintenance)) {
+            // set the owning side to null (unless already changed)
+            if ($maintenance->getUser() === $this) {
+                $maintenance->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ride>
+     */
+    public function getRides(): Collection
+    {
+        return $this->rides;
+    }
+
+    public function addRide(Ride $ride): self
+    {
+        if (!$this->rides->contains($ride)) {
+            $this->rides->add($ride);
+            $ride->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRide(Ride $ride): self
+    {
+        if ($this->rides->removeElement($ride)) {
+            $ride->removeUser($this);
+        }
 
         return $this;
     }
