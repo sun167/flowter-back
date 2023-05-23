@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+#[ApiResource]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -56,6 +58,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: Ride::class, mappedBy: 'users')]
     private Collection $rides;
+
+    #[ORM\Column(length: 50)]
+    private ?string $email = null;
 
     public function __construct()
     {
@@ -296,6 +301,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->rides->removeElement($ride)) {
             $ride->removeUser($this);
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }
