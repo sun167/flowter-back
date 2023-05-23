@@ -22,6 +22,9 @@ class Incident
     #[ORM\OneToMany(mappedBy: 'incident', targetEntity: Maintenance::class)]
     private Collection $maintenances;
 
+    #[ORM\ManyToOne(inversedBy: 'incidents')]
+    private ?Ride $ride = null;
+
     public function __construct()
     {
         $this->maintenances = new ArrayCollection();
@@ -70,6 +73,18 @@ class Incident
                 $maintenance->setIncident(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRide(): ?Ride
+    {
+        return $this->ride;
+    }
+
+    public function setRide(?Ride $ride): self
+    {
+        $this->ride = $ride;
 
         return $this;
     }
