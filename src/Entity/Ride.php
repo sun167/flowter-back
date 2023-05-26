@@ -45,6 +45,9 @@ class Ride
     #[ORM\OneToMany(mappedBy: 'ride', targetEntity: Incident::class)]
     private Collection $incidents;
 
+    #[ORM\ManyToOne(inversedBy: 'rides')]
+    private ?Status $status = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -190,6 +193,18 @@ class Ride
                 $incident->setRide(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
