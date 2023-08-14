@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Location;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -80,10 +81,10 @@ class DashboardController extends AbstractDashboardController
             // to customize the labels of locales, pass a key => value array
             // (e.g. to display flags; although it's not a recommended practice,
             // because many languages/locales are not associated to a single country)
-            ->setLocales([
-                'en' => '🇬🇧 English',
-                'pl' => '🇵🇱 Polski'
-            ])
+            // ->setLocales([
+            //     'en' => '🇬🇧 English',
+            //     'fr' => '🇵🇱 Francais'
+            // ])
             // to further customize the locale option, pass an instance of
             // EasyCorp\Bundle\EasyAdminBundle\Config\Locale
             // ->setLocales([
@@ -101,6 +102,9 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Users');
         yield MenuItem::linkToCrud('Users', 'fa fa-user', User::class);
+
+        yield MenuItem::section('Locations');
+        yield MenuItem::linkToCrud('Locations', 'fa fa-building', Location::class);
         // ];
     }
 }
