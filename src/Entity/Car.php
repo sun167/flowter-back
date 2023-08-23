@@ -45,10 +45,14 @@ class Car
     #[ORM\OneToMany(mappedBy: 'car', targetEntity: Ride::class)]
     private Collection $rides;
 
+    #[ORM\ManyToMany(targetEntity: Option::class, mappedBy: 'cars')]
+    private Collection $options;
+
     public function __construct()
     {
         $this->maintenances = new ArrayCollection();
         $this->rides = new ArrayCollection();
+        $this->options = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -205,6 +209,33 @@ class Car
             if ($ride->getCar() === $this) {
                 $ride->setCar(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Option>
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): static
+    {
+        if (!$this->options->contains($option)) {
+            $this->options->add($option);
+            $option->addCar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): static
+    {
+        if ($this->options->removeElement($option)) {
+            $option->removeCar($this);
         }
 
         return $this;
