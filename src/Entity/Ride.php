@@ -37,9 +37,6 @@ class Ride
     private Collection $users;
 
     #[ORM\ManyToOne(inversedBy: 'rides')]
-    private ?Location $location = null;
-
-    #[ORM\ManyToOne(inversedBy: 'rides')]
     private ?Car $car = null;
 
     #[ORM\OneToMany(mappedBy: 'ride', targetEntity: Incident::class)]
@@ -47,6 +44,12 @@ class Ride
 
     #[ORM\ManyToOne(inversedBy: 'rides')]
     private ?Status $status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'ridesDepartFromThisLocation')]
+    private ?Location $departurePlace = null;
+
+    #[ORM\ManyToOne(inversedBy: 'ridesComesToThisDestination')]
+    private ?Location $destination = null;
 
     public function __construct()
     {
@@ -143,18 +146,6 @@ class Ride
         return $this;
     }
 
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?Location $location): self
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
     public function getCar(): ?Car
     {
         return $this->car;
@@ -205,6 +196,30 @@ class Ride
     public function setStatus(?Status $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getDeparturePlace(): ?Location
+    {
+        return $this->departurePlace;
+    }
+
+    public function setDeparturePlace(?Location $departurePlace): static
+    {
+        $this->departurePlace = $departurePlace;
+
+        return $this;
+    }
+
+    public function getDestination(): ?Location
+    {
+        return $this->destination;
+    }
+
+    public function setDestination(?Location $destination): static
+    {
+        $this->destination = $destination;
 
         return $this;
     }

@@ -29,9 +29,17 @@ class Location
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Ride::class)]
     private Collection $rides;
 
+    #[ORM\OneToMany(mappedBy: 'departurePlace', targetEntity: Ride::class)]
+    private Collection $ridesDepartFromThisLocation;
+
+    #[ORM\OneToMany(mappedBy: 'destination', targetEntity: Ride::class)]
+    private Collection $ridesComesToThisDestination;
+
     public function __construct()
     {
         $this->rides = new ArrayCollection();
+        $this->ridesDepartFromThisLocation = new ArrayCollection();
+        $this->ridesComesToThisDestination = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,6 +107,66 @@ class Location
             // set the owning side to null (unless already changed)
             if ($ride->getLocation() === $this) {
                 $ride->setLocation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ride>
+     */
+    public function getRidesDepartFromThisLocation(): Collection
+    {
+        return $this->ridesDepartFromThisLocation;
+    }
+
+    public function addRidesDepartFromThisLocation(Ride $ridesDepartFromThisLocation): static
+    {
+        if (!$this->ridesDepartFromThisLocation->contains($ridesDepartFromThisLocation)) {
+            $this->ridesDepartFromThisLocation->add($ridesDepartFromThisLocation);
+            $ridesDepartFromThisLocation->setDeparturePlace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRidesDepartFromThisLocation(Ride $ridesDepartFromThisLocation): static
+    {
+        if ($this->ridesDepartFromThisLocation->removeElement($ridesDepartFromThisLocation)) {
+            // set the owning side to null (unless already changed)
+            if ($ridesDepartFromThisLocation->getDeparturePlace() === $this) {
+                $ridesDepartFromThisLocation->setDeparturePlace(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ride>
+     */
+    public function getRidesComesToThisDestination(): Collection
+    {
+        return $this->ridesComesToThisDestination;
+    }
+
+    public function addRidesComesToThisDestination(Ride $ridesComesToThisDestination): static
+    {
+        if (!$this->ridesComesToThisDestination->contains($ridesComesToThisDestination)) {
+            $this->ridesComesToThisDestination->add($ridesComesToThisDestination);
+            $ridesComesToThisDestination->setDestination($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRidesComesToThisDestination(Ride $ridesComesToThisDestination): static
+    {
+        if ($this->ridesComesToThisDestination->removeElement($ridesComesToThisDestination)) {
+            // set the owning side to null (unless already changed)
+            if ($ridesComesToThisDestination->getDestination() === $this) {
+                $ridesComesToThisDestination->setDestination(null);
             }
         }
 
