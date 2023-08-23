@@ -35,6 +35,12 @@ class Model
     #[ORM\ManyToOne(inversedBy: 'models')]
     private ?CarType $carType = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $gearbox = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $fuel = null;
+
     public function __construct()
     {
         $this->cars = new ArrayCollection();
@@ -131,6 +137,30 @@ class Model
     public function setCarType(?CarType $carType): self
     {
         $this->carType = $carType;
+
+        return $this;
+    }
+
+    public function isGearbox(): ?bool
+    {
+        return $this->gearbox;
+    }
+
+    public function setGearbox(?bool $gearbox): static
+    {
+        $this->gearbox = $gearbox;
+
+        return $this;
+    }
+
+    public function getFuel(): ?int
+    {
+        return $this->fuel;
+    }
+
+    public function setFuel(?int $fuel): static
+    {
+        $this->fuel = $fuel;
 
         return $this;
     }
