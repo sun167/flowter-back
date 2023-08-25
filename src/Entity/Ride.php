@@ -36,6 +36,9 @@ class Ride
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'rides')]
     private Collection $users;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ridesAsDriver')]
+    private User $driver;
+
     #[ORM\ManyToOne(inversedBy: 'rides')]
     private ?Car $car = null;
 
@@ -50,6 +53,9 @@ class Ride
 
     #[ORM\ManyToOne(inversedBy: 'ridesComesToThisDestination')]
     private ?Location $destination = null;
+
+    #[ORM\ManyToOne(inversedBy: 'rides')]
+    private ?Motive $motive = null;
 
     public function __construct()
     {
@@ -139,6 +145,18 @@ class Ride
         return $this;
     }
 
+    public function getDriver(): ?User
+    {
+        return $this->driver;
+    }
+
+    public function setDriver(User $driver): self
+    {
+        $this->driver = $driver;
+
+        return $this;
+    }
+
     public function removeUser(User $user): self
     {
         $this->users->removeElement($user);
@@ -157,6 +175,7 @@ class Ride
 
         return $this;
     }
+
 
     /**
      * @return Collection<int, Incident>
@@ -220,6 +239,18 @@ class Ride
     public function setDestination(?Location $destination): static
     {
         $this->destination = $destination;
+
+        return $this;
+    }
+
+    public function getMotive(): ?Motive
+    {
+        return $this->motive;
+    }
+
+    public function setMotive(?Motive $motive): static
+    {
+        $this->motive = $motive;
 
         return $this;
     }
