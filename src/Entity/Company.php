@@ -3,30 +3,42 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Repository\CompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
-#[ORM\Entity(repositoryClass: CompanyRepository::class)]
+#[ApiResource(normalizationContext: ['groups' => ['get']])]
+#[Get()]
+#[Post(
+normalizationContext: ['groups' => ['postRead']],
+denormalizationContext: ['groups' => ['postWrite']]
+)]#[ORM\Entity(repositoryClass: CompanyRepository::class)]
 class Company
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('get')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255)]    
+    #[Groups('get')]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
+    #[Groups(['get', 'postWrite'])]
     private Collection $users;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Car::class)]
+    #[Groups(['get', 'postWrite'])]
     private Collection $cars;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('get')]
     private ?string $address = null;
 
     public function __construct()

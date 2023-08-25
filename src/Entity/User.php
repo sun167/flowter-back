@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,8 +12,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['get']])]
+#[Get()]
+#[Post(
+normalizationContext: ['groups' => ['postRead']],
+denormalizationContext: ['groups' => ['postWrite']]
+)]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['id'], message: 'There is already an account with this id')]
@@ -20,51 +28,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('get')]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['get', 'postWrite'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['get', 'postWrite'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['get', 'postWrite'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['get', 'postWrite'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['get', 'postWrite'])]
     private ?string $phone = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['get', 'postWrite'])]
     private ?bool $driverLicenceCheck = null;
 
     #[ORM\Column]
+    #[Groups(['get', 'postWrite'])]
     private ?bool $identityCheck = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['get', 'postWrite'])]
     private ?bool $isDriver = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Allowance::class)]
+    #[Groups('get')]    
     private Collection $allowances;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
+    #[Groups('get')]    
     private ?Company $company = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Maintenance::class)]
+    #[Groups('get')]        
     private Collection $maintenances;
 
     #[ORM\ManyToMany(targetEntity: Ride::class, mappedBy: 'users')]
+    #[Groups('get')]    
     private Collection $rides;
 
     #[ORM\OneToMany(targetEntity: Ride::class, mappedBy: 'driver')]
+    #[Groups('get')]            
     private Collection $ridesAsDriver;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['get', 'postWrite'])]
     private ?string $email = null;
 
     public function __construct()

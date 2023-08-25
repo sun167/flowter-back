@@ -3,49 +3,68 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['get']])]
+#[Get()]
+#[Post(
+normalizationContext: ['groups' => ['postRead']],
+denormalizationContext: ['groups' => ['postWrite']]
+)]
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 class Car
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('get')]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['get', 'postWrite'])]
     private ?\DateTimeInterface $motDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['get', 'postWrite'])]
     private ?\DateTimeInterface $insuranceDate = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['get', 'postWrite'])]
     private ?string $licensePlate = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['get', 'postWrite'])]
     private ?float $mileage = null;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
+    #[Groups('get')]
     private ?Model $model = null;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
+    #[Groups('get')]
     private ?Company $company = null;
 
     #[ORM\OneToMany(mappedBy: 'car', targetEntity: Maintenance::class)]
+    #[Groups('get')]
     private Collection $maintenances;
 
     #[ORM\OneToMany(mappedBy: 'car', targetEntity: Ride::class)]
+    #[Groups('get')]
     private Collection $rides;
 
     #[ORM\ManyToMany(targetEntity: Option::class, mappedBy: 'cars')]
+    #[Groups('get')]
     private Collection $options;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
+    #[Groups('get')]
     private ?Location $location = null;
 
     public function __construct()

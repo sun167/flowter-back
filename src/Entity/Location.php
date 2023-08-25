@@ -34,18 +34,19 @@ class Location
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
 
-    #[Groups('get')]
+    // #[Groups('get')]
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Ride::class)]
     private Collection $rides;
-    #[Groups('get')]
+
+    // #[Groups('get')]
     #[ORM\OneToMany(mappedBy: 'departurePlace', targetEntity: Ride::class)]
     private Collection $ridesDepartFromThisLocation;
 
-    #[Groups('get')]
+    // #[Groups('get')]
     #[ORM\OneToMany(mappedBy: 'destination', targetEntity: Ride::class)]
     private Collection $ridesComesToThisDestination;
 
-    #[Groups('get')]
+    // #[Groups('get')]
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Car::class)]
     private Collection $cars;
 

@@ -3,24 +3,35 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Repository\CarTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['get']])]
+#[Get()]
+#[Post(
+normalizationContext: ['groups' => ['postRead']],
+denormalizationContext: ['groups' => ['postWrite']]
+)]
 #[ORM\Entity(repositoryClass: CarTypeRepository::class)]
 class CarType
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('get')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['get', 'postWrite'])]
     private ?string $label = null;
 
     #[ORM\OneToMany(mappedBy: 'carType', targetEntity: Model::class)]
+    #[Groups('get')]
     private Collection $models;
 
     public function __construct()

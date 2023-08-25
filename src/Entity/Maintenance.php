@@ -7,7 +7,12 @@ use App\Repository\MaintenanceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['get']])]
+#[Get()]
+#[Post(
+normalizationContext: ['groups' => ['postRead']],
+denormalizationContext: ['groups' => ['postWrite']]
+)]
 #[ORM\Entity(repositoryClass: MaintenanceRepository::class)]
 class Maintenance
 {

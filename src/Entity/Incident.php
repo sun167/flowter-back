@@ -3,28 +3,40 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Repository\IncidentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['get']])]
+#[Get()]
+#[Post(
+normalizationContext: ['groups' => ['postRead']],
+denormalizationContext: ['groups' => ['postWrite']]
+)]
 #[ORM\Entity(repositoryClass: IncidentRepository::class)]
 class Incident
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('get')]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['get', 'postWrite'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\OneToMany(mappedBy: 'incident', targetEntity: Maintenance::class)]
+    #[Groups('get')]
     private Collection $maintenances;
 
     #[ORM\ManyToOne(inversedBy: 'incidents')]
+    #[Groups('get')]
     private ?Ride $ride = null;
 
     public function __construct()
