@@ -2,7 +2,15 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Brand;
+use App\Entity\Car;
+use App\Entity\CarType;
+use App\Entity\Company;
 use App\Entity\Location;
+use App\Entity\Model;
+use App\Entity\Motive;
+use App\Entity\Option;
+use App\Entity\Ride;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -61,7 +69,7 @@ class DashboardController extends AbstractDashboardController
 
             // set this option if you prefer the sidebar (which contains the main menu)
             // to be displayed as a narrow column instead of the default expanded design
-            ->renderSidebarMinimized()
+            //->renderSidebarMinimized()
 
             // by default, users can select between a "light" and "dark" mode for the
             // backend interface. Call this method if you prefer to disable the "dark"
@@ -101,10 +109,23 @@ class DashboardController extends AbstractDashboardController
        
 
         yield MenuItem::section('Users');
-        yield MenuItem::linkToCrud('Users', 'fa fa-user', User::class);
+        yield MenuItem::linkToCrud('List of users', 'fa fa-user', User::class);
 
-        yield MenuItem::section('Locations');
-        yield MenuItem::linkToCrud('Locations', 'fa fa-building', Location::class);
+        yield MenuItem::section("Companies");
+        yield MenuItem::linkToCrud('List of companies', 'fa fa-building', Company::class);
+        yield MenuItem::linkToCrud('Locations', 'fas fa-map-marker', Location::class);
+
+        yield MenuItem::section("Cars");
+        yield MenuItem::linkToCrud('List of cars', 'fas fa-car', Car::class);
+        yield MenuItem::linkToCrud('Types of car', 'fas fa-question', CarType::class);
+        yield MenuItem::linkToCrud('Brands', 'fas fa-star', Brand::class);
+        yield MenuItem::linkToCrud('Models', 'fas fa-cube', Model::class);
+        yield MenuItem::linkToCrud('Car options', 'fas fa-cog', Option::class);
+
+        yield MenuItem::section("Reservations");
+        yield MenuItem::linkToCrud('Rides', 'fas fa-file-alt', Ride::class);
+        yield MenuItem::linkToCrud('Motives', 'fas fa-flag', Motive::class);
+
         // ];
     }
 }
