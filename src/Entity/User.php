@@ -241,6 +241,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Ride>
+     */
+    public function getRidesAsDriver(): Collection
+    {
+        return $this->ridesAsDriver;
+    }
+
+    public function addRidesAsDriver(Ride $rideAsDriver): self
+    {
+        if (!$this->ridesAsDriver->contains($rideAsDriver)) {
+            $this->ridesAsDriver->add($rideAsDriver);
+            $rideAsDriver->setDriver($this);
+        }
+
+        return $this;
+    }
+
     public function getCompany(): ?Company
     {
         return $this->company;
