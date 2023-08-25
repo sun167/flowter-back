@@ -39,14 +39,14 @@ class Car
     #[ORM\OneToMany(mappedBy: 'car', targetEntity: Maintenance::class)]
     private Collection $maintenances;
 
-    #[ORM\OneToOne(mappedBy: 'car', cascade: ['persist', 'remove'])]
-    private ?Location $location = null;
-
     #[ORM\OneToMany(mappedBy: 'car', targetEntity: Ride::class)]
     private Collection $rides;
 
     #[ORM\ManyToMany(targetEntity: Option::class, mappedBy: 'cars')]
     private Collection $options;
+
+    #[ORM\ManyToOne(inversedBy: 'cars')]
+    private ?Location $location = null;
 
     public function __construct()
     {
@@ -162,28 +162,6 @@ class Car
         return $this;
     }
 
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?Location $location): self
-    {
-        // unset the owning side of the relation if necessary
-        if ($location === null && $this->location !== null) {
-            $this->location->setCar(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($location !== null && $location->getCar() !== $this) {
-            $location->setCar($this);
-        }
-
-        $this->location = $location;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Ride>
      */
@@ -237,6 +215,18 @@ class Car
         if ($this->options->removeElement($option)) {
             $option->removeCar($this);
         }
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }
