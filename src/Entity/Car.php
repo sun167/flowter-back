@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Filter\CarRideFilter;
 use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -31,6 +32,11 @@ denormalizationContext: ['groups' => ['postWrite']]
 ])]
 #[ApiFilter(SearchFilter::class, properties: [
 'car.location.name' => 'iexact'
+])]
+#[ApiFilter(CarRideFilter::class, properties: [
+"date_of_loan", 
+"date_of_return", 
+"departureSite"
 ])]
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 class Car

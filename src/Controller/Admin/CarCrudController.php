@@ -24,7 +24,7 @@ class CarCrudController extends AbstractCrudController
             NumberField::new('model.nbSeats', 'Number of Seats')->hideOnForm(),
             AssociationField::new('options')->hideOnIndex(),
             AssociationField::new('company'),
-            AssociationField::new('model'),
+            AssociationField::new('model'), //TODO add a pop-up here to show users carType & brand
             TextField::new('licensePlate'),
             DateTimeField::new('insuranceDate')
         ];
