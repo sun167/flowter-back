@@ -39,14 +39,6 @@ class Ride
     #[Groups(['get', 'postWrite'])]
     private ?\DateTimeInterface $dateOfReturn = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups('get')]
-    private ?\DateTimeInterface $realDateOfLoan = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups('get')]
-    private ?\DateTimeInterface $realDateOfReturn = null;
-
     #[ORM\Column(nullable: true)]
     #[Groups('get')]
     private ?int $nbOfSeats = null;
@@ -120,30 +112,6 @@ class Ride
     public function setDateOfReturn(\DateTimeInterface $dateOfReturn): self
     {
         $this->dateOfReturn = $dateOfReturn;
-
-        return $this;
-    }
-
-    public function getRealDateOfLoan(): ?\DateTimeInterface
-    {
-        return $this->realDateOfLoan;
-    }
-
-    public function setRealDateOfLoan(?\DateTimeInterface $realDateOfLoan): self
-    {
-        $this->realDateOfLoan = $realDateOfLoan;
-
-        return $this;
-    }
-
-    public function getRealDateOfReturn(): ?\DateTimeInterface
-    {
-        return $this->realDateOfReturn;
-    }
-
-    public function setRealDateOfReturn(?\DateTimeInterface $realDateOfReturn): self
-    {
-        $this->realDateOfReturn = $realDateOfReturn;
 
         return $this;
     }
