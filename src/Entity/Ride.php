@@ -76,10 +76,6 @@ class Ride
     #[Groups(['get', 'postWrite'])]
     private ?Location $departurePlace = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ridesComesToThisDestination')]
-    #[Groups(['get', 'postWrite'])]
-    private ?Location $destination = null;
-
     #[ORM\ManyToOne(inversedBy: 'rides')]
     #[Groups(['get', 'postWrite'])]
     private ?Motive $motive = null;
@@ -89,6 +85,9 @@ class Ride
 
     #[ORM\Column(nullable: true)]
     private ?float $mileageAfter = null;
+
+    #[ORM\ManyToOne(inversedBy: 'rides')]
+    private ?Destination $destination = null;
 
     public function __construct()
     {
@@ -264,18 +263,6 @@ class Ride
         return $this;
     }
 
-    public function getDestination(): ?Location
-    {
-        return $this->destination;
-    }
-
-    public function setDestination(?Location $destination): static
-    {
-        $this->destination = $destination;
-
-        return $this;
-    }
-
     public function getMotive(): ?Motive
     {
         return $this->motive;
@@ -308,6 +295,18 @@ class Ride
     public function setMileageAfter(?float $mileageAfter): static
     {
         $this->mileageAfter = $mileageAfter;
+
+        return $this;
+    }
+
+    public function getDestination(): ?Destination
+    {
+        return $this->destination;
+    }
+
+    public function setDestination(?Destination $destination): static
+    {
+        $this->destination = $destination;
 
         return $this;
     }
