@@ -2,8 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,6 +22,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 normalizationContext: ['groups' => ['postRead']],
 denormalizationContext: ['groups' => ['postWrite']]
 )]
+#[GetCollection()]
+#[ApiFilter(DateFilter::class, properties: [
+'car.rides.dateOfLoan'
+])]
+#[ApiFilter(DateFilter::class, properties: [
+'car.rides.dateOfReturn'
+])]
+#[ApiFilter(SearchFilter::class, properties: [
+'car.location.name' => 'iexact'
+])]
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 class Car
 {
@@ -39,32 +53,28 @@ class Car
     #[Groups(['get', 'postWrite'])]
     private ?string $licensePlate = null;
 
-    #[ORM\Column(nullable: true)]
-    #[Groups(['get', 'postWrite'])]
-    private ?float $mileage = null;
-
     #[ORM\ManyToOne(inversedBy: 'cars')]
-    #[Groups('get')]
+    // #[Groups('get')]
     private ?Model $model = null;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
-    #[Groups('get')]
+    // #[Groups('get')]
     private ?Company $company = null;
 
     #[ORM\OneToMany(mappedBy: 'car', targetEntity: Maintenance::class)]
-    #[Groups('get')]
+    // #[Groups('get')]
     private Collection $maintenances;
 
     #[ORM\OneToMany(mappedBy: 'car', targetEntity: Ride::class)]
-    #[Groups('get')]
+    // #[Groups('get')]
     private Collection $rides;
 
     #[ORM\ManyToMany(targetEntity: Option::class, mappedBy: 'cars')]
-    #[Groups('get')]
+    // #[Groups('get')]
     private Collection $options;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
-    #[Groups('get')]
+    // #[Groups('get')]
     private ?Location $location = null;
 
     public function __construct()
@@ -111,18 +121,6 @@ class Car
     public function setLicensePlate(?string $licensePlate): self
     {
         $this->licensePlate = $licensePlate;
-
-        return $this;
-    }
-
-    public function getMileage(): ?float
-    {
-        return $this->mileage;
-    }
-
-    public function setMileage(?float $mileage): self
-    {
-        $this->mileage = $mileage;
 
         return $this;
     }

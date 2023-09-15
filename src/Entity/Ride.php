@@ -2,60 +2,93 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\RideRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource]
+#[Get()]
+#[GetCollection(uriTemplate: '/companies/{companyId}/users', itemUriTemplate: '/companies/{companyId}/users/{id}'/*, ... */)]
+#[Post(
+normalizationContext: ['groups' => ['postRead']],
+denormalizationContext: ['groups' => ['postWrite']]
+)]
+
 #[ORM\Entity(repositoryClass: RideRepository::class)]
 class Ride
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('get')]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['get', 'postWrite'])]
     private ?\DateTimeInterface $dateOfLoan = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['get', 'postWrite'])]
     private ?\DateTimeInterface $dateOfReturn = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups('get')]
     private ?\DateTimeInterface $realDateOfLoan = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups('get')]
     private ?\DateTimeInterface $realDateOfReturn = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('get')]
     private ?int $nbOfSeats = null;
 
+    // Users are passengers
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'rides')]
+    #[Groups(['get', 'postWrite'])]
     private Collection $users;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ridesAsDriver')]
+    #[Groups('get')]
     private User $driver;
 
     #[ORM\ManyToOne(inversedBy: 'rides')]
+    #[Groups('get')]
     private ?Car $car = null;
 
     #[ORM\OneToMany(mappedBy: 'ride', targetEntity: Incident::class)]
+    #[Groups('get')]
     private Collection $incidents;
 
     #[ORM\ManyToOne(inversedBy: 'rides')]
+    #[Groups('get')]
     private ?Status $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'ridesDepartFromThisLocation')]
+    #[Groups(['get', 'postWrite'])]
     private ?Location $departurePlace = null;
 
     #[ORM\ManyToOne(inversedBy: 'ridesComesToThisDestination')]
+    #[Groups(['get', 'postWrite'])]
     private ?Location $destination = null;
 
     #[ORM\ManyToOne(inversedBy: 'rides')]
+    #[Groups(['get', 'postWrite'])]
     private ?Motive $motive = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $mileageBefore = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $mileageAfter = null;
 
     public function __construct()
     {
@@ -251,6 +284,30 @@ class Ride
     public function setMotive(?Motive $motive): static
     {
         $this->motive = $motive;
+
+        return $this;
+    }
+
+    public function getMileageBefore(): ?float
+    {
+        return $this->mileageBefore;
+    }
+
+    public function setMileageBefore(?float $mileageBefore): static
+    {
+        $this->mileageBefore = $mileageBefore;
+
+        return $this;
+    }
+
+    public function getMileageAfter(): ?float
+    {
+        return $this->mileageAfter;
+    }
+
+    public function setMileageAfter(?float $mileageAfter): static
+    {
+        $this->mileageAfter = $mileageAfter;
 
         return $this;
     }
