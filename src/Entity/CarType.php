@@ -87,4 +87,9 @@ class CarType
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->label;
+    }
 }

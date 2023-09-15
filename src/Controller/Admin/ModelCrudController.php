@@ -38,6 +38,7 @@ class ModelCrudController extends AbstractCrudController
                 'Electrique' =>2
                 ]),
             AssociationField::new('brand'),
+            AssociationField::new('carType'),
         ];
     }
     
