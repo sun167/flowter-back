@@ -20,12 +20,6 @@ class Model
     #[ORM\Column(length: 255)]
     private ?string $label = null;
 
-    #[ORM\Column]
-    private ?int $nbSeats = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $horsePower = null;
-
     #[ORM\ManyToOne(inversedBy: 'models')]
     private ?Brand $brand = null;
 
@@ -35,11 +29,6 @@ class Model
     #[ORM\ManyToOne(inversedBy: 'models')]
     private ?CarType $carType = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $gearbox = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $fuel = null;
 
     public function __construct()
     {
@@ -63,29 +52,7 @@ class Model
         return $this;
     }
 
-    public function getNbSeats(): ?int
-    {
-        return $this->nbSeats;
-    }
-
-    public function setNbSeats(int $nbSeats): self
-    {
-        $this->nbSeats = $nbSeats;
-
-        return $this;
-    }
-
-    public function getHorsePower(): ?int
-    {
-        return $this->horsePower;
-    }
-
-    public function setHorsePower(?int $horsePower): self
-    {
-        $this->horsePower = $horsePower;
-
-        return $this;
-    }
+    
 
     public function getBrand(): ?Brand
     {
@@ -141,29 +108,6 @@ class Model
         return $this;
     }
 
-    public function isGearbox(): ?bool
-    {
-        return $this->gearbox;
-    }
-
-    public function setGearbox(?bool $gearbox): static
-    {
-        $this->gearbox = $gearbox;
-
-        return $this;
-    }
-
-    public function getFuel(): ?int
-    {
-        return $this->fuel;
-    }
-
-    public function setFuel(?int $fuel): static
-    {
-        $this->fuel = $fuel;
-
-        return $this;
-    }
 
     public function __toString()
     {

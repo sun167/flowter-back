@@ -9,7 +9,9 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use App\Filter\CarRideFilter;
+use App\ApiResource\Filter\CarRideFilter;
+use App\ApiResource\Filter\FullCalendarDateFilter;
+use App\Controller\CustomCarController;
 use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,26 +19,43 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource(normalizationContext: ['groups' => ['get']])]
+#[ApiResource(
+normalizationContext: ['groups' => ['get']],
+operations: [
+new GetCollection(
+    name: 'custom_cars',
+    // routeName: 'custom_cars',
+    uriTemplate: 'cars/available?departureDate={departureDate}&returnDate={returnDate}',
+    controller: CustomCarController::class,
+)
+]
+)]
+// #[ApiFilter(OrderFilter::class, properties: ['company.id'])]
 #[Get()]
 #[Post(
 normalizationContext: ['groups' => ['postRead']],
 denormalizationContext: ['groups' => ['postWrite']]
 )]
 #[GetCollection()]
-#[ApiFilter(DateFilter::class, properties: [
-'car.rides.dateOfLoan'
-])]
-#[ApiFilter(DateFilter::class, properties: [
-'car.rides.dateOfReturn'
-])]
+// #[ApiFilter(DateFilter::class, properties: [
+// 'rides.dateOfLoan'
+// ])]
+// #[ApiFilter(DateFilter::class, properties: [
+// 'rides.dateOfReturn','rides.dateOfLoan'
+// ])]
 #[ApiFilter(SearchFilter::class, properties: [
-'car.location.name' => 'iexact'
-])]
-#[ApiFilter(CarRideFilter::class, properties: [
-"date_of_loan", 
-"date_of_return", 
-"departureSite"
+'company.name'])]
+// #[ApiFilter(SearchFilter::class, properties: [
+// 'licensePlate' => 'partial'
+// ])]
+// #[ApiFilter(CarRideFilter::class, properties: [
+// "date_of_loan", 
+// "date_of_return", 
+// "departureSite"
+// ])]
+#[ApiFilter(FullCalendarDateFilter::class, properties: [
+"rides.dateOfLoan", 
+"rides.dateOfReturn"
 ])]
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 class Car
@@ -83,6 +102,17 @@ class Car
     // #[Groups('get')]
     private ?Location $location = null;
 
+    #[ORM\Column]
+    private ?int $nbSeats = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $horsePower = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $gearbox = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $fuel = null;
     public function __construct()
     {
         $this->maintenances = new ArrayCollection();
@@ -122,6 +152,54 @@ class Car
     public function getLicensePlate(): ?string
     {
         return $this->licensePlate;
+    }
+public function getNbSeats(): ?int
+    {
+        return $this->nbSeats;
+    }
+
+    public function setNbSeats(int $nbSeats): self
+    {
+        $this->nbSeats = $nbSeats;
+
+        return $this;
+    }
+
+    public function getHorsePower(): ?int
+    {
+        return $this->horsePower;
+    }
+
+    public function setHorsePower(?int $horsePower): self
+    {
+        $this->horsePower = $horsePower;
+
+        return $this;
+    }
+
+
+ public function isGearbox(): ?bool
+    {
+        return $this->gearbox;
+    }
+
+    public function setGearbox(?bool $gearbox): static
+    {
+        $this->gearbox = $gearbox;
+
+        return $this;
+    }
+
+    public function getFuel(): ?int
+    {
+        return $this->fuel;
+    }
+
+    public function setFuel(?int $fuel): static
+    {
+        $this->fuel = $fuel;
+
+        return $this;
     }
 
     public function setLicensePlate(?string $licensePlate): self

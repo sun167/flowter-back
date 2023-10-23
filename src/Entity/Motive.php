@@ -74,4 +74,9 @@ class Motive
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->label;
+    }
 }

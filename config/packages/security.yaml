@@ -8,12 +8,17 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: id
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            entry_point: form_login
+            form_login:
+            # "app_login" is the name of the route created previously
+                login_path: app_login
+                check_path: app_login
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\Authenticator

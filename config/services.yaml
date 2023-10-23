@@ -19,7 +19,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    App\Filter\CarRideFilter:
+    App\ApiResource\Filter\CarRideFilter:
         tags:
             - { name: 'api_platform.filter' }
     # add more service definitions when explicit configuration is needed

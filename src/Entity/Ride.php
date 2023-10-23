@@ -53,23 +53,23 @@ class Ride
     private User $driver;
 
     #[ORM\ManyToOne(inversedBy: 'rides')]
-    #[Groups('get')]
+    // #[Groups('get')]
     private ?Car $car = null;
 
     #[ORM\OneToMany(mappedBy: 'ride', targetEntity: Incident::class)]
-    #[Groups('get')]
+    // #[Groups('get')]
     private Collection $incidents;
 
     #[ORM\ManyToOne(inversedBy: 'rides')]
-    #[Groups('get')]
+    // #[Groups('get')]
     private ?Status $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'ridesDepartFromThisLocation')]
-    #[Groups(['get', 'postWrite'])]
+    // #[Groups(['get', 'postWrite'])]
     private ?Location $departurePlace = null;
 
     #[ORM\ManyToOne(inversedBy: 'rides')]
-    #[Groups(['get', 'postWrite'])]
+    // #[Groups(['get', 'postWrite'])]
     private ?Motive $motive = null;
 
     #[ORM\Column(nullable: true)]

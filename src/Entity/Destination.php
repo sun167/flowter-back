@@ -26,8 +26,8 @@ class Destination
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $city = null;
 
-    #[ORM\OneToMany(mappedBy: 'destination', targetEntity: Ride::class)]
-    private Collection $rides;
+    // #[ORM\OneToMany(mappedBy: 'destination', targetEntity: Ride::class)]
+    // private Collection $rides;
 
     public function __construct()
     {

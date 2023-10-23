@@ -24,19 +24,6 @@ class ModelCrudController extends AbstractCrudController
     {
         return [
             TextField::new('label'),
-            NumberField::new('nbSeats', 'Number of Seats'),
-            NumberField::new('horsePower'),
-            ChoiceField::new('gearbox')
-                ->setChoices([
-                'Manuel' => 0,
-                'Automatic' => 1
-                ]),
-            ChoiceField::new('fuel')
-                ->setChoices([
-                'Diesel' => 0,
-                'Essence' => 1,
-                'Electrique' =>2
-                ]),
             AssociationField::new('brand'),
             AssociationField::new('carType'),
         ];

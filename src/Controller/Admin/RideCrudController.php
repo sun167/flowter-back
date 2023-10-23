@@ -4,6 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\Ride;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 
 class RideCrudController extends AbstractCrudController
 {
@@ -12,14 +15,18 @@ class RideCrudController extends AbstractCrudController
         return Ride::class;
     }
 
-    /*
+    
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            DateTimeField::new('dateOfLoan'),
+            DateTimeField::new('dateOfReturn'),
+            AssociationField::new('users')->hideOnIndex(),
+            AssociationField::new('driver'),
+            AssociationField::new('motive'),
+            NumberField::new('mileageBefore'),
+            NumberField::new('mileageAfter'),
         ];
     }
-    */
+   
 }

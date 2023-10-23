@@ -1,8 +1,9 @@
 <?php
 // src/Filter/CarDateAndLocationFilter.php
 
-namespace App\Filter;
+namespace App\ApiResource\Filter;
 
+use ApiPlatform\Api\FilterInterface;
 use ApiPlatform\Doctrine\Orm\Filter\AbstractDateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\AbstractSearchFilter;
 use Doctrine\ORM\QueryBuilder;
@@ -10,9 +11,13 @@ use ApiPlatform\Doctrine\Orm\Filter\AbstractContextAwareFilter;
 use ApiPlatform\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
+use Doctrine\ORM\Query\Expr\Join;
 
 class CarRideFilter extends AbstractFilter
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
         if (
@@ -30,18 +35,23 @@ class CarRideFilter extends AbstractFilter
 
         // Apply the filter to the query builder based on the filter property.
         $parameterName = $queryNameGenerator->generateParameterName($property);
-
-        $queryBuilder->leftJoin("car.ride", 'ride');
-        $queryBuilder->leftJoin('ride.company', 'company');
-        $rootAlias = 'company';
+        $alias = $queryBuilder->getRootAliases()[0];
+        $field = $property;
+        $queryBuilder->innerJoin("$alias.ride", 'ride');
+        
+        if ($this->isPropertyNested($property, $resourceClass)) {
+            [$alias, $field] = $this->addJoinsForNestedProperty($property, $alias, $queryBuilder, $queryNameGenerator, $resourceClass, Join::INNER_JOIN);
+        }
+        echo "test";
+        $valueParameter = $queryNameGenerator->generateParameterName($field);
          // Join the necessary associations if they haven't been joined already.
-        $rootAlias = $queryBuilder->getRootAliases()[0];
+
         if ($property === 'date_of_loan' || $property === 'date_of_return') {
-            $queryBuilder->leftJoin("$rootAlias.ride", 'ride');
+            $queryBuilder->innerJoin("$alias.ride", 'ride');
             $rootAlias = 'ride';
         } elseif ($property === 'departureSite') {
-            $queryBuilder->leftJoin("$rootAlias.ride", 'ride');
-            $queryBuilder->leftJoin('ride.company', 'company');
+            $queryBuilder->innerJoin("$alias.ride", 'ride');
+            $queryBuilder->innerJoin('ride.company', 'company');
             $rootAlias = 'company';
         }
             
@@ -53,6 +63,8 @@ class CarRideFilter extends AbstractFilter
         } elseif ($property === 'departureSite') {
             $queryBuilder->andWhere("$rootAlias.name = :$parameterName");
         }
+    $queryBuilder
+        ->andWhere(sprintf("$alias.id = 2"));
     }
 
     public function getDescription(string $resourceClass): array
