@@ -1,0 +1,7 @@
+easy_admin:
+    entities:
+        User:
+            class: App\Entity\User
+            list:
+                filters:
+                    - { property: 'company', type: 'eq' }

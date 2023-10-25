@@ -24,7 +24,7 @@ class CarCrudController extends AbstractCrudController
         return [
             NumberField::new('nbSeats', 'Number of Seats'),
             AssociationField::new('options')->setFormTypeOption('label', 'options')->hideOnIndex(),
-            AssociationField::new('company'),
+            AssociationField::new('company')->setPermission("ROLE_ADMIN"),
             NumberField::new('horsePower'),
             ChoiceField::new('gearbox')
                 ->setChoices([

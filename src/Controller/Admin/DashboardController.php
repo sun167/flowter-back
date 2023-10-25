@@ -112,8 +112,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('List of users', 'fa fa-user', User::class);
 
         yield MenuItem::section("Companies");
-        yield MenuItem::linkToCrud('List of companies', 'fa fa-building', Company::class);
-        yield MenuItem::linkToCrud('Locations', 'fas fa-map-marker', Location::class);
+        yield MenuItem::linkToCrud('List of companies', 'fa fa-building', Company::class)->setPermission("ROLE_ADMIN");
+        yield MenuItem::linkToCrud('Locations', 'fas fa-map-marker', Location::class)->setPermission("ROLE_ADMIN");
 
         yield MenuItem::section("Cars");
         yield MenuItem::linkToCrud('List of cars', 'fas fa-car', Car::class);

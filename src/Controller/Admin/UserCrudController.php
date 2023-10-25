@@ -6,6 +6,7 @@ use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -25,8 +26,8 @@ class UserCrudController extends AbstractCrudController
             TextField::new('email', 'Email address'),
             TextField::new('password', 'Password'),
             TextField::new('phone', 'Telephone number'),
-            ArrayField::new('roles','Role of user'),
-            
+            ArrayField::new('roles','Role of user')->setPermission("ROLE_ADMIN"),
+            AssociationField::new('company', 'Company')->setPermission("ROLE_ADMIN"),
             BooleanField::new('driverLicenseCheck', 'Has a checked driver licence?'),
             BooleanField::new('identityCheck', 'Has a checked ID card?'),
             
